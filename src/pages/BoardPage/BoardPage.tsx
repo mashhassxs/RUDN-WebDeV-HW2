@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import type { Task } from '../../types'
 import TaskColumn from '../../components/TaskColumn/TaskColumn'
+import { useBoardFiltersStore } from '../../store/useBoardFiltersStore'
 
 const fetchTasks = async (): Promise<Task[]> => {
   const { data } = await axios.get('https://jsonplaceholder.typicode.com/todos')
@@ -21,15 +22,25 @@ export default function BoardPage() {
     queryFn: fetchTasks,
   })
 
+  const hideDone = useBoardFiltersStore((state) => state.hideDone)
+  const toggleHideDone = useBoardFiltersStore((state) => state.toggleHideDone)
+
   if (isLoading) return <Typography>Загрузка...</Typography>
 
   return (
-    <Box sx={{ display: 'flex', gap: 2 }}>
-      {[0, 1, 2].map((status) => (
-        <Box key={status} sx={{ flex: 1 }}>
-          <TaskColumn tasks={tasks} status={status} />
-        </Box>
-      ))}
+    <Box>
+      <Box sx={{ mb: 2 }}>
+        <button onClick={toggleHideDone}>
+          {hideDone ? 'Показать все' : 'Скрыть выполненные'}
+        </button>
+      </Box>
+      <Box sx={{ display: 'flex', gap: 2 }}>
+        {[0, 1, 2].map((status) => (
+          <Box key={status} sx={{ flex: 1 }}>
+            <TaskColumn tasks={tasks} status={status} />
+          </Box>
+        ))}
+      </Box>
     </Box>
   )
 }
