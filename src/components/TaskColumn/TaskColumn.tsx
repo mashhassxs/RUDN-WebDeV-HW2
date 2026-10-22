@@ -7,9 +7,10 @@ const statusLabels = ['К выполнению', 'В работе', 'Выпол�
 interface Props {
   tasks: Task[]
   status: number
+  onDelete: (id: number) => void
 }
 
-export default function TaskColumn({ tasks, status }: Props) {
+export default function TaskColumn({ tasks, status, onDelete }: Props) {
   const filtered = tasks.filter((t) => t.status === status)
 
   return (
@@ -19,7 +20,7 @@ export default function TaskColumn({ tasks, status }: Props) {
       </Typography>
       <Box>
         {filtered.map((task) => (
-          <TaskCard key={task.id} task={task} />
+          <TaskCard key={task.id} task={task} onDelete={onDelete} />
         ))}
       </Box>
     </Paper>
