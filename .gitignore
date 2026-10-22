@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+<<<<<<< HEAD
+=======
+# Локальные настройки окружения: строка подключения к базе, пароли
+.env
+
+>>>>>>> upstream/main
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,3 +28,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+<<<<<<< HEAD
+=======
+
+# AI Tools
+.claude
+
+# Локальные файлы GigaCode не нужны в репозитории, а скиллы OpenSpec — нужны:
+# они лежат в .gigacode/skills/ и приезжают вместе с клоном
+.gigacode/*
+!.gigacode/skills/
+>>>>>>> upstream/main
