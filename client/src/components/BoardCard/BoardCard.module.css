@@ -16,3 +16,17 @@
   opacity: 0.5;
   text-decoration: line-through;
 }
+.deleteBtn {
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.deleteBtn:hover {
+  background: #cc0000;
+}

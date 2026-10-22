@@ -1,25 +1,22 @@
 import { Box, Typography, Paper } from '@mui/material'
-import type { Task } from '../../types'
 import TaskCard from '../TaskCard/TaskCard'
-
-const statusLabels = ['К выполнению', 'В работе', 'Выполнено']
+import type { Card } from '../../types/card'
 
 interface Props {
-  tasks: Task[]
-  status: number
+  title: string
+  cards: Card[]
+  onDelete: (id: string) => void
 }
 
-export default function TaskColumn({ tasks, status }: Props) {
-  const filtered = tasks.filter((t) => t.status === status)
-
+export default function TaskColumn({ title, cards, onDelete }: Props) {
   return (
-    <Paper sx={{ p: 2, minHeight: 400 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        {statusLabels[status]}
+    <Paper sx={{ p: 2, minWidth: 300 }}>
+      <Typography variant="h6" gutterBottom>
+        {title}
       </Typography>
       <Box>
-        {filtered.map((task) => (
-          <TaskCard key={task.id} task={task} />
+        {cards.map((card) => (
+          <TaskCard key={card.id} card={card} onDelete={onDelete} />
         ))}
       </Box>
     </Paper>

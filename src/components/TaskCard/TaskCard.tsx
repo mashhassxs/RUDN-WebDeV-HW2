@@ -1,26 +1,31 @@
-import { Card, CardContent, Typography } from '@mui/material'
+import { Card, CardContent, Typography, Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import type { Task } from '../../types'
+import type { Card as CardType } from '../../types/card'
 
 interface Props {
-  task: Task
+  card: CardType
+  onDelete: (id: string) => void
 }
 
-export default function TaskCard({ task }: Props) {
+export default function TaskCard({ card, onDelete }: Props) {
   const navigate = useNavigate()
 
   return (
-    <Card sx={{ mb: 1, cursor: 'pointer' }}>
+    <Card sx={{ mb: 1, cursor: 'pointer' }} onClick={() => navigate(`/tasks/${card.id}`)}>
       <CardContent>
-        <Typography
-          variant="subtitle2"
-          color="primary"
-          onClick={() => navigate(`/task/${task.id}`)}
-          sx={{ cursor: 'pointer', textDecoration: 'underline' }}
+        <Typography variant="subtitle2">#{card.id}</Typography>
+        <Typography variant="body2">{card.title}</Typography>
+        <Button
+          size="small"
+          color="error"
+          onClick={(e) => {
+            e.stopPropagation()
+            onDelete(card.id)
+          }}
+          sx={{ mt: 1 }}
         >
-          #{task.id}
-        </Typography>
-        <Typography variant="body2">{task.title}</Typography>
+          Удалить
+        </Button>
       </CardContent>
     </Card>
   )

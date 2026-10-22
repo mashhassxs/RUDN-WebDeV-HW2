@@ -1,35 +1,39 @@
-import { Box, Typography } from '@mui/material'
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
-import type { Task } from '../../types'
-import TaskColumn from '../../components/TaskColumn/TaskColumn'
-
-const fetchTasks = async (): Promise<Task[]> => {
-  const { data } = await axios.get('https://jsonplaceholder.typicode.com/todos')
-  return data.slice(0, 20).map((item: any) => ({
-    id: item.id,
-    title: item.title,
-    description: '',
-    createdAt: new Date(),
-    status: item.completed ? 2 : 0,
-  }))
-}
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { BoardHeader } from '../../components/BoardHeader/BoardHeader'
+import { BoardColumn } from '../../components/BoardColumn/BoardColumn'
+import { fetchCards, deleteCard as deleteCardApi } from '../../api/cards'
+import type { Card } from '../../types/card'
 
 export default function BoardPage() {
-  const { data: tasks = [], isLoading } = useQuery({
-    queryKey: ['tasks'],
-    queryFn: fetchTasks,
+  const queryClient = useQueryClient()
+
+  const { data: cards = [], isLoading } = useQuery({
+    queryKey: ['cards'],
+    queryFn: fetchCards,
   })
 
-  if (isLoading) return <Typography>Загрузка...</Typography>
+  const deleteCard = async (id: string) => {
+    const confirmed = window.confirm('Вы уверены, что хотите удалить карточку?')
+    if (!confirmed) return
+
+    await deleteCardApi(id)
+    queryClient.invalidateQueries({ queryKey: ['cards'] })
+  }
+
+  if (isLoading) return <div>Загрузка...</div>
+
+  const todoCards = cards.filter((c) => !c.isDone && !c.isUrgent)
+  const urgentCards = cards.filter((c) => !c.isDone && c.isUrgent)
+  const doneCards = cards.filter((c) => c.isDone)
 
   return (
-    <Box sx={{ display: 'flex', gap: 2 }}>
-      {[0, 1, 2].map((status) => (
-        <Box key={status} sx={{ flex: 1 }}>
-          <TaskColumn tasks={tasks} status={status} />
-        </Box>
-      ))}
-    </Box>
+    <div>
+      <BoardHeader />
+      <div style={{ display: 'flex', gap: 20, padding: 20 }}>
+        <BoardColumn title="К выполнению" cards={todoCards} onDelete={deleteCard} />
+        <BoardColumn title="Срочные" cards={urgentCards} onDelete={deleteCard} />
+        <BoardColumn title="Выполнено" cards={doneCards} onDelete={deleteCard} />
+      </div>
+    </div>
   )
 }
